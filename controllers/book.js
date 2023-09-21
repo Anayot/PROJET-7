@@ -1,9 +1,13 @@
 const books = require('../models/books')
 
 exports.createBook = (req, res, next) => {
+    const bookObject = JSON.parse(req.body.book)
+    delete bookObject._id
+    delete bookObject._userId
     const book = new books({
-        ...req.body,
-        userId: req.auth.userId
+        ...bookObject,
+        userId: req.auth.userId,
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     })
     book.save()
         .then(() => res.status(201).json({ message: 'Objet enregistré' }))
@@ -14,7 +18,7 @@ exports.modifyBook = (req, res, next) => {
     books.findOne({_id: req.params.id})
         .then((book) => {
             if(book.userId != req.auth.userId) {
-                res.status(400).json({ message: 'Non-autorisé' })
+                res.status(403).json({ message: 'Unauthorized request' })
             } else {
                 books.updateOne({_id: req.params.id}, {...req.body, _id: req.params.id})
                     .then(() => res.status(201).json({ message: 'Objet modifié' }))
@@ -29,7 +33,7 @@ exports.deleteBook = (req, res, next) => {
     books.findOne({_id: req.params.id})
         .then((book) => {
             if(book.userId != req.auth.userId) {
-                res.status(400).json({ message: 'Non-autorisé' })
+                res.status(403).json({ message: 'Unauthorized request' })
             } else {
                 books.deleteOne({_id: req.params.id})
                     .then(() => res.status(200).json({ message: 'Objet supprimé' }))

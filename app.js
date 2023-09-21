@@ -1,9 +1,12 @@
 const express = require('express')
+const dotenv = require('dotenv')
 const mongoose = require('mongoose')
+const path =  require('path')
 const bookRoutes = require('./routes/book')
 const userRoutes = require('./routes/user')
 
-mongoose.connect('mongodb+srv://anaelleyot:E9kn7mDpcOkTLVe4@anayot.qvbmybm.mongodb.net/?retryWrites=true&w=majority',
+dotenv.config({ path: '.env' })
+mongoose.connect(process.env.mongoose,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -22,7 +25,8 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use('api/books', bookRoutes)
-app.use('api/auth', userRoutes)
+app.use('/api/books', bookRoutes)
+app.use('/api/auth', userRoutes)
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 module.exports = app
