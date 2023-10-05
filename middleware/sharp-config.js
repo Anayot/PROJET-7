@@ -7,7 +7,6 @@ const MIME_TYPES = {
 }
 
 module.exports = (req, res, next) => {
-    console.log(req.file)
     if(!req.file) {
         return res.status(400).json({ error: 'Aucun fichier' })
     }
@@ -17,7 +16,6 @@ module.exports = (req, res, next) => {
     req.file.filename = name + '_' + Date.now() + '.' + extension
 
 
-    console.log(req.file.filename)
     sharp(req.file.buffer)
     .resize({width: 200})
     .toFile(`./images/${req.file.filename}`)

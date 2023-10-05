@@ -41,7 +41,6 @@ exports.createRating = (req, res) => {
 }
 
 exports.modifyBook = (req, res) => {
-    console.log('Allo')
     // Modifie l'image
     const bookObject = req.file ? {
         ...JSON.parse(req.body.book),
